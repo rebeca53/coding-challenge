@@ -1,6 +1,38 @@
-// Example program
 #include <iostream>
 #include <string>
+
+/*
+Time complexity:
+    void RemoveDuplicates()
+    {	
+O(1)	Node *cursor = nullptr;
+O(1)	Node *parent = nullptr;
+O(1)	Node *aux = this;
+O(n)	while (aux)
+	{
+	O(1)	cursor = aux->next;
+	O(1)	parent = cursor;
+
+	O(n)	while (cursor)
+		{
+		O(1)	if (cursor->key.compare(aux->key) != 0)
+			{
+		O(1)		parent = cursor;
+			}
+			else
+			{
+		O(1)		parent->next = cursor->next;
+		O(1)		delete cursor;
+			}
+		O(1)	cursor = cursor->next;
+		}
+	O(1)	aux = aux->next;
+	}
+    }
+O(3)+O(n)*(O(2)+O(n)*O(5)+O(1))= O(3)+O(n)*O(5n+3) = O(3)+O(5n^2+3n)=O(5n^2+3n+3) =>O(n^2)
+
+Space complexity: O(n)
+*/
 
 class Node
 {
