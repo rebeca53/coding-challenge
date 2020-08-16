@@ -60,7 +60,8 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
     }
 
     boolean isPartialPermutation(String wordA, String wordB){
-        int lettersChanged = 0;
+        Log.d("WordListAdapter","isPartialPermutation a:"+ wordA+ "b:" + wordB);
+        float lettersChanged = 0;
         int counterA = 0;
         int counterB = 0;
 
@@ -70,6 +71,7 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
             for (char b : wordB.toCharArray())
             {
                 if (counterA == counterB){
+                    Log.d("WordListAdapter","The first letter is different");
                     if (counterA == 0 && a != b){
                         return false;
                     }
@@ -88,48 +90,59 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
             counterA++;
         }
 
-        if (lettersChanged/counterA < (2/3))
+        Log.d("WordListAdapter","Letters changed rate is "+(lettersChanged/counterA));
+
+        if (lettersChanged/counterA > (2/3))
         {
+            Log.d("WordListAdapter","too many letters moved!");
             return false;
         }
 
         for (char b : wordB.toCharArray())
         {
             if (b != '$'){
+                Log.d("WordListAdapter","Letters set are different between them.");
                 return false;
             }
         }
-
+        Log.d("WordListAdapter","It is a partial permutation");
         return true;
     }
 
     boolean isMissingChar(String wordA, String wordB)
     {
         if (wordA.length() < wordB.length()){
+            Log.d("WordListAdapter","No char is missing. The query word is greater than list word");
+
             return false;
         }
         for (int i=0; i<wordA.length()-1;i++){
             if (wordA.charAt(i) != wordB.charAt(i))
             {
+                Log.d("WordListAdapter","isMissingChar: " + (wordA.charAt(i+1) == wordB.charAt(i)));
                 return wordA.charAt(i+1) == wordB.charAt(i);
             }
         }
+        Log.d("WordListAdapter","isMissingChar");
 
         return true;
     }
 
     boolean isCharInserted(String wordA, String wordB){
-        if (wordB.length() < wordA.length()){
+        if (wordB.length() <= wordA.length()){
+            Log.d("WordListAdapter","No char was inserted. The query word is smaller than list word");
             return false;
         }
 
         for (int i=0; i<wordB.length()-1; i++){
             if (wordA.charAt(i) != wordB.charAt(i)){
+                Log.d("WordListAdapter",wordB+" isCharInserted regarding to "+wordA+":" + (wordA.charAt(i) == wordB.charAt(i+1)));
                 return wordA.charAt(i) == wordB.charAt(i+1);
             }
         }
+        Log.d("WordListAdapter","isCharInserted");
 
-        return false;
+        return true;
     }
 
     boolean isCharReplaced(String wordA, String wordB){
@@ -144,10 +157,11 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
             }
 
             if (replacedQuantity > 1){
+                Log.d("WordListAdapter","More than one char is replaced");
                 return false;
             }
         }
-
+        Log.d("WordListAdapter","One char is replaced");
         return true;
     }
 
@@ -175,9 +189,7 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
                     LinkedList<String> filteredList = new LinkedList<String>();
                     for (String row : m_wordList) {
 
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
-                        if (row.contains(charSequence)) {
+                        if (row.contains(charSequence) || isTypoORisPermutation(row, charString)) {
                             filteredList.add(row);
                         }
                     }
